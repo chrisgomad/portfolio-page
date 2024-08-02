@@ -35,7 +35,18 @@
       "last 1 safari version"
     ]
   },
-  "engines":{
+  "engines": {
     "node": "16.x"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   }
 }
