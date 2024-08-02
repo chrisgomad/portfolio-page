@@ -1,8 +1,36 @@
+import React, { useState, useEffect } from 'react';
 import logo from "./logo.svg";
 import "./App.css";
-import React from "react";
+import { getEntries, addEntry, updateEntry, deleteEntry } from './services/entryService';
 
 function App() {
+  const [entries, setEntries] = useState([]);
+  const [newEntry, setNewEntry] = useState({ title: '', content: '' });
+
+  useEffect(() => {
+    const fetchEntries = async () => {
+      const data = await getEntries();
+      setEntries(data);
+    };
+    fetchEntries();
+  }, []);
+
+  const handleAddEntry = async () => {
+    const addedEntry = await addEntry(newEntry);
+    setEntries([...entries, addedEntry]);
+    setNewEntry({ title: '', content: '' }); // Reset the form
+  };
+
+  const handleUpdateEntry = async (id, updatedEntry) => {
+    const updated = await updateEntry(id, updatedEntry);
+    setEntries(entries.map(entry => (entry._id === id ? updated : entry)));
+  };
+
+  const handleDeleteEntry = async (id) => {
+    await deleteEntry(id);
+    setEntries(entries.filter(entry => entry._id !== id));
+  };
+
   return (
     <div className="App">
       <header className="App-header">
@@ -19,6 +47,33 @@ function App() {
           Learn React
         </a>
       </header>
+      <main>
+        <h1>Entries</h1>
+        <ul>
+          {entries.map(entry => (
+            <li key={entry._id}>
+              {entry.title} - {entry.content}
+              <button onClick={() => handleUpdateEntry(entry._id, { title: 'Updated', content: 'Updated content' })}>Edit</button>
+              <button onClick={() => handleDeleteEntry(entry._id)}>Delete</button>
+            </li>
+          ))}
+        </ul>
+        <div>
+          <input
+            type="text"
+            value={newEntry.title}
+            onChange={(e) => setNewEntry({ ...newEntry, title: e.target.value })}
+            placeholder="Title"
+          />
+          <input
+            type="text"
+            value={newEntry.content}
+            onChange={(e) => setNewEntry({ ...newEntry, content: e.target.value })}
+            placeholder="Content"
+          />
+          <button onClick={handleAddEntry}>Add Entry</button>
+        </div>
+      </main>
     </div>
   );
 }
