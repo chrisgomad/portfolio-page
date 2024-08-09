@@ -24,6 +24,6 @@ jobs:
       - name: Run Prettier Check
         run: npx prettier --check .
 
-      - name: Run Prettier Fix
-        if: failure()
-        run: npx prettier --write .
+      #- name: Run Prettier Fix
+      #  if: failure()
+      #  run: npx prettier --write .
