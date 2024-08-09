@@ -13,7 +13,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "14"
+          node-version: "16.x"
 
       - name: Install dependencies
         run: npm install
@@ -27,12 +27,3 @@ jobs:
       - name: Run Prettier Fix
         if: failure()
         run: npx prettier --write .
-      
-      - name: Commit changes
-        if: failure()
-        run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add .
-          git commit -m 'chore: fix code style issues with Prettier'
-          git push
