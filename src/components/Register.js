@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import DOMPurify from "dompurify";
 
 const Register = () => {
   const [email, setEmail] = useState("");
@@ -10,7 +11,9 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("/api/register", { email, password });
+      const sanitizedEmail = DOMPurify.sanitize(email);
+      const sanitizedPassword = DOMPurify.sanitize(password);
+      await axios.post("/api/register", { email: sanitizedEmail, password: sanitizedPassword });
       history.push("/login");
     } catch (error) {
       console.error("Registration failed", error);

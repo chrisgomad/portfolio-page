@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import DOMPurify from "dompurify";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -10,7 +11,9 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/api/login", { email, password });
+      const sanitizedEmail = DOMPurify.sanitize(email);
+      const sanitizedPassword = DOMPurify.sanitize(password);
+      const response = await axios.post("http://localhost:5000/api/login", { email: sanitizedEmail, password: sanitizedPassword });
       localStorage.setItem("token", response.data.token);
       history.push("/profile");
     } catch (error) {
